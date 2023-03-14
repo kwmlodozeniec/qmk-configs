@@ -9,7 +9,7 @@ enum {
     TD_CW_CL, // Tap for CAPS WORD, double tap for CAPS LOCK
 };
 
-void td_capswork_lock(qk_tap_dance_state_t *state, void *user_data) {
+void td_capswork_lock(tap_dance_state_t *state, void *user_data) {
     if (state->count == 1) {
         caps_word_toggle();
     } else if (state->count == 2) {
@@ -19,7 +19,7 @@ void td_capswork_lock(qk_tap_dance_state_t *state, void *user_data) {
 };
 
 // Tap Dance definitions
-qk_tap_dance_action_t tap_dance_actions[] = {
+tap_dance_action_t tap_dance_actions[] = {
     // Tap once for Caps Word, twice for Caps Lock
     [TD_CW_CL] = ACTION_TAP_DANCE_FN(td_capswork_lock),
 };

@@ -1,0 +1,44 @@
+name: KWM Keyboards
+
+on:
+  push:
+  workflow_dispatch:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    container: qmkfm/qmk_cli
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          path: main
+
+      - name: Checkout QMK repository
+        uses: actions/checkout@v3
+        with:
+          repository: qmk/qmk_firmware
+          submodules: recursive
+          path: qmk_firmware
+
+      - name: Copy keymaps to relevant directories
+        run: |
+          cp --recursive main/crkbd/kwmlodozeniec qmk_firmware/keyboards/crkbd/keymaps/
+
+      - name: Build firmware
+        run: |
+          cd qmk_firmware
+          qmk compile -kb crkbd/r2g -km kwmlodozeniec
+          qmk compile -kb crkbd/rev1 -km kwmlodozeniec
+          qmk compile -kb crkbd/rev1 -km kwmlodozeniec -e CONVERT_TO=kb2040
+
+      - name: Save firmware files
+        uses: actions/upload-artifact@v3
+        with:
+          name: firmware-files
+          path: |
+            ./qmk_firmware/.build/*.hex
+            ./qmk_firmware/.build/*.uf2
